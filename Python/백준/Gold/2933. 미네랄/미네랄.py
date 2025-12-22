@@ -6,7 +6,7 @@ dx, dy = [-1,1,0,0], [0,0,-1,1]
 def find_cluster(mat,x,y): #(x,y)에서 시작한 cluster가 공중에 떠 있는가?
     R,C = len(mat),len(mat[0])
     visited,issperated = [[False]*C for _ in range(R)], True
-    elements, boundarys = [],[] #floor 지만 matrix 구조상 max임 boundaty : 해당 elements 밑에 같은 cluster가 존재하는가?
+    elements= [] #floor 지만 matrix 구조상 max임
     bfs = deque([(x,y)])
     visited[x][y] = True
     while bfs:
@@ -14,19 +14,17 @@ def find_cluster(mat,x,y): #(x,y)에서 시작한 cluster가 공중에 떠 있�
         elements.append((x,y))
         if x == R-1:
             issperated = False
-        elif mat[x+1][y] == ".":
-            boundarys.append((x,y))
         for u in range(4):
             nx,ny = x+dx[u],y+dy[u]
             if (0<= nx < R) and (0 <= ny <C):
                 if (mat[nx][ny] == "x") and (not visited[nx][ny]):
                     bfs.append((nx,ny))
                     visited[nx][ny] = True
-    return issperated, elements, boundarys
+    return issperated, elements
 
 
 
-def down_cluster(mat,elements,boundarys): #cluster를 중력으로 내리기(꼭 floor로 인해 down이 끝나는 건 아니다)
+def down_cluster(mat,elements): #cluster를 중력으로 내리기(꼭 floor로 인해 down이 끝나는 건 아니다)
     R,C = len(mat), len(mat[0])
     mat_copy = [["."]*C for _ in range(R)]
     for i in range(R):
@@ -69,9 +67,9 @@ def solve():
             nx,ny = height+dx[u], j+dy[u]
             if (0<= nx < R) and (0 <= ny < C):
                 if mineral_map[nx][ny] == "x":
-                    isseperated,elements,boundarys = find_cluster(mineral_map,nx,ny)
+                    isseperated,elements = find_cluster(mineral_map,nx,ny)
                     if isseperated:
-                        down_cluster(mineral_map, elements, boundarys)
+                        down_cluster(mineral_map, elements)
     print("\n".join(["".join(arr) for arr in mineral_map]))      
 
         
